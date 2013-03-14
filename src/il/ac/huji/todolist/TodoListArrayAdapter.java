@@ -27,7 +27,7 @@ public class TodoListArrayAdapter extends ArrayAdapter<String> {
 		View view = inflater.inflate(R.layout.row,null);
 		TextView text = (TextView)view.findViewById(R.id.todoText);
 		text.setText(getItem(position));
-		text.setBackgroundColor( position%2 == 0 ?Color.RED : Color.BLUE);
+		text.setTextColor( position%2 == 0 ?Color.RED : Color.BLUE);
 		return view;
 	}
 	
