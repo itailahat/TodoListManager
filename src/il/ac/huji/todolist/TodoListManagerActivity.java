@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -27,7 +26,7 @@ public class TodoListManagerActivity extends Activity {
 		
 		
 		todolist = (ListView)findViewById(R.id.lstTodoItems);
-		todoAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,todos);
+		todoAdapter = new TodoListArrayAdapter(this,android.R.layout.simple_list_item_1,todos);
 		todolist.setAdapter(todoAdapter);
 		// TODO: remove this addings:
 		todoAdapter.add("Some todo2");
