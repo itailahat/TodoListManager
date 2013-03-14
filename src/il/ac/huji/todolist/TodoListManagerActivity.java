@@ -13,6 +13,7 @@ import android.widget.ListView;
 
 public class TodoListManagerActivity extends Activity {
 	
+	private ArrayList<String> todos;
 	private ListView todolist;
 	private ArrayAdapter<String> todoAdapter;
 	
@@ -22,16 +23,17 @@ public class TodoListManagerActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_todo_list_manager);
 		
-		ArrayList<String> todos = new ArrayList<String>();
-		// TODO: remove this addings:
-		todos.add("Some todo");
-		todos.add("Some todo2");
-		todos.add("Some todo3");
-		todos.add("Some todo4");
+		todos = new ArrayList<String>();
+		
+		
 		todolist = (ListView)findViewById(R.id.lstTodoItems);
 		todoAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,todos);
 		todolist.setAdapter(todoAdapter);
-		
+		// TODO: remove this addings:
+		todoAdapter.add("Some todo2");
+		todoAdapter.add("Some todo");
+		todoAdapter.add("Some todo3");
+		todoAdapter.add("Some todo4");
 		
 	}
 
@@ -46,21 +48,17 @@ public class TodoListManagerActivity extends Activity {
     	}
     	
     	todoAdapter.add(thestring);
+    	newTodo.setText("");
 	}
 	
 	public void DeleteSelectedTodoItem()
 	{
 		ListView todoList = (ListView)findViewById(R.id.lstTodoItems);
-		String selected = (String)todoList.getSelectedItem();
-		if (null != selected)
+		int selected = todoList.getSelectedItemPosition();
+		if (selected >=0 )
 		{
-			Log.i("selected",selected);
-			todoAdapter.remove(selected);
-		}
-		else
-		{
-			Log.i("Select", "Clear");
-			todoAdapter.clear();
+			todos.remove(selected);				
+			todoAdapter.notifyDataSetChanged();
 		}
 		
 	}
