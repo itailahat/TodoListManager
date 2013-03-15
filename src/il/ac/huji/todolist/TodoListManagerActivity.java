@@ -27,13 +27,7 @@ public class TodoListManagerActivity extends Activity {
 		
 		todolist = (ListView)findViewById(R.id.lstTodoItems);
 		todoAdapter = new TodoListArrayAdapter(this,android.R.layout.simple_list_item_1,todos);
-		todolist.setAdapter(todoAdapter);
-		// TODO: remove this addings:
-		todoAdapter.add("Some todo2");
-		todoAdapter.add("Some todo");
-		todoAdapter.add("Some todo3");
-		todoAdapter.add("Some todo4");
-		
+		todolist.setAdapter(todoAdapter);		
 	}
 
 	
