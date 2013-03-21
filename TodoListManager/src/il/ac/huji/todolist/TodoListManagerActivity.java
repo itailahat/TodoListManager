@@ -3,6 +3,7 @@ package il.ac.huji.todolist;
 import java.util.Date;
 import java.util.ArrayList;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class TodoListManagerActivity extends Activity {
 	
@@ -125,7 +127,24 @@ public class TodoListManagerActivity extends Activity {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		return super.onContextItemSelected(item);
+			AdapterContextMenuInfo info = (AdapterContextMenuInfo)item.getMenuInfo();
+		int selected = info.position;
+		switch (item.getItemId()) {
+		case R.id.menuItemDelete:
+			todos.remove(selected);				
+			todoAdapter.notifyDataSetChanged();
+			break;
+		case R.id.menuItemCall:
+			// gets the number, assuming 'call ' at the beginning
+			String number = todos.get(selected).title.substring(5);  
+			Intent dial = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+number));
+			startActivity(dial);
+
+			break;
+		default:
+			break;
+		}
+		return true;
 	}
 
 
@@ -135,7 +154,18 @@ public class TodoListManagerActivity extends Activity {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflater = getMenuInflater();
 	    inflater.inflate(R.menu.context_todo_menu, menu);
-	    
+	    TodoItem current = todos.get(((AdapterContextMenuInfo)menuInfo).position);
+	    menu.setHeaderTitle(current.title);
+	    if (current.title.matches("(?i)call\\s.*"))
+	    {
+		    MenuItem callItem = menu.getItem(1);
+		    callItem.setVisible(true);
+		    callItem.setTitle(current.title);
+	    }
+	    else
+	    {
+	    	menu.removeItem(1);
+	    }
 	}
 	
 }

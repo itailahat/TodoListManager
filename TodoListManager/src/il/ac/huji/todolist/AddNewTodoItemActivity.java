@@ -28,6 +28,7 @@ public class AddNewTodoItemActivity extends Activity {
 		DatePicker dp = (DatePicker)findViewById(R.id.datePicker);
 		@SuppressWarnings("deprecation")
 		Date chosenDate = new Date(dp.getYear() - 1900, dp.getMonth(), dp.getDayOfMonth());
+		//TODO: make the extra a serializable and handle the returned intent as well 
 		result.putExtra(TodoListManagerActivity.ADD_ITEM_RESULT_DATE, chosenDate.getTime());
 		setResult(RESULT_OK,result);
 		finish();
