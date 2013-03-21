@@ -1,6 +1,7 @@
 package il.ac.huji.todolist;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -30,24 +31,29 @@ public class TodoListArrayAdapter extends ArrayAdapter<TodoItem> {
 	{
 		LayoutInflater inflater = LayoutInflater.from(getContext());
 		View view = inflater.inflate(R.layout.row,null);
+		TodoItem currentItem = getItem(position);
 		TextView text = (TextView)view.findViewById(R.id.txtTodoTitle);
-		text.setText(getItem(position).title);
-		
+		text.setText(currentItem.title);
 		TextView dueDate = (TextView)view.findViewById(R.id.txtTodoDueDate);
-		if (null == getItem(position).dueDate)
+		if (null == currentItem.dueDate)
 		{
 			dueDate.setText("No due date");
 		}
 		else
 		{
 			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-			dueDate.setText(df.format(getItem(position).dueDate));
+			dueDate.setText(df.format(currentItem.dueDate));
 		}
-		//TODO: format color according to dueDate status
 		
-		Date now = new Date();
+		Calendar clNow = Calendar.getInstance();
+		Calendar clCurrent = Calendar.getInstance();
 		
-		if (now.after(getItem(position).dueDate))
+		clNow.setTime(new Date());
+		clNow.add(Calendar.DATE, -1);
+		
+		clCurrent.setTime(currentItem.dueDate);
+		
+		if (clNow.after(clCurrent))
 		{
 			text.setTextColor(Color.RED);
 			dueDate.setTextColor(Color.RED);
