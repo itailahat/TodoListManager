@@ -36,7 +36,7 @@ public class TodoListArrayAdapter extends ArrayAdapter<TodoItem> {
 		}
 		else
 		{
-			dueDate.setText(getItem(position).toString()); //TODO: make sure it's the right format
+			dueDate.setText(getItem(position).dueDate.toString()); //TODO: make sure it's the right format
 		}
 		//TODO: format color according to dueDate status
 		return view;

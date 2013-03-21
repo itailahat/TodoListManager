@@ -1,5 +1,6 @@
 package il.ac.huji.todolist;
 
+import java.util.Date;
 import java.util.ArrayList;
 
 import android.os.Bundle;
@@ -18,6 +19,7 @@ public class TodoListManagerActivity extends Activity {
 	
 	public final static int ADD_ACTIVITY_REQUEST_CODE = 1;
 	public final static String ADD_ITEM_RESULT_STRING="title";
+	public final static String ADD_ITEM_RESULT_DATE="dueDate";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,20 +52,30 @@ public class TodoListManagerActivity extends Activity {
 			if (RESULT_OK == resultCode)
 			{
 				String AddItemTitle = data.getStringExtra(ADD_ITEM_RESULT_STRING);
-				AddItemInTodoList(AddItemTitle);
+				Date dueDate = new Date();
+				long longDate = data.getLongExtra(ADD_ITEM_RESULT_DATE, -1);
+				if (longDate>=0)
+				{
+					dueDate.setTime(longDate);
+				}
+				else
+				{
+					dueDate.setTime(1);
+				}
+				AddItemInTodoList(AddItemTitle,dueDate);
 			}
 			break;
 		}
 	}
 
 
-	public void AddItemInTodoList(String thestring)
+	public void AddItemInTodoList(String thestring, Date dueDate)
 	{
     	if (null == thestring || thestring == "" || thestring.length()==0)
     	{
     		return;
     	}	
-    	todoAdapter.add(new TodoItem(thestring,null));
+    	todoAdapter.add(new TodoItem(thestring,dueDate));
     	
 	}
 	
