@@ -1,6 +1,7 @@
 package il.ac.huji.todolist;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -31,7 +32,7 @@ public class TodoListArrayAdapter extends ArrayAdapter<TodoItem> {
 		View view = inflater.inflate(R.layout.row,null);
 		TextView text = (TextView)view.findViewById(R.id.txtTodoTitle);
 		text.setText(getItem(position).title);
-		text.setTextColor( position%2 == 0 ?Color.RED : Color.BLUE);
+		
 		TextView dueDate = (TextView)view.findViewById(R.id.txtTodoDueDate);
 		if (null == getItem(position).dueDate)
 		{
@@ -43,6 +44,20 @@ public class TodoListArrayAdapter extends ArrayAdapter<TodoItem> {
 			dueDate.setText(df.format(getItem(position).dueDate));
 		}
 		//TODO: format color according to dueDate status
+		
+		Date now = new Date();
+		
+		if (now.after(getItem(position).dueDate))
+		{
+			text.setTextColor(Color.RED);
+			dueDate.setTextColor(Color.RED);
+		}
+		else
+		{
+			text.setTextColor(Color.BLUE);
+			dueDate.setTextColor(Color.BLUE);
+		}
+		
 		return view;
 	}
 	
