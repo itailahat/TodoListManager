@@ -26,6 +26,7 @@ public class AddNewTodoItemActivity extends Activity {
 		EditText newTodo = (EditText)findViewById(R.id.edtNewItem);
 		result.putExtra(TodoListManagerActivity.ADD_ITEM_RESULT_STRING, newTodo.getText().toString());
 		DatePicker dp = (DatePicker)findViewById(R.id.datePicker);
+		@SuppressWarnings("deprecation")
 		Date chosenDate = new Date(dp.getYear() - 1900, dp.getMonth(), dp.getDayOfMonth());
 		result.putExtra(TodoListManagerActivity.ADD_ITEM_RESULT_DATE, chosenDate.getTime());
 		setResult(RESULT_OK,result);

@@ -60,7 +60,7 @@ public class TodoListManagerActivity extends Activity {
 				}
 				else
 				{
-					dueDate.setTime(1);
+					dueDate = null;
 				}
 				AddItemInTodoList(AddItemTitle,dueDate);
 			}
