@@ -13,26 +13,38 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:ems="10" android:inputType="text"
-        android:hint="@string/new_task"/>
+        android:ems="10"
+        android:hint="@string/new_task"
+        android:inputType="text" />
+
+    <DatePicker
+        android:id="@+id/datePicker1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edtNewItem"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:calendarViewShown="false" />"
 
     <Button
         android:id="@+id/btnOK"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/edtNewItem"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="41dp"
-       	android:text="@string/ok"
-       	android:onClick="okClickHandler" />
+        android:layout_alignRight="@+id/edtNewItem"
+        android:layout_below="@+id/datePicker1"
+        android:layout_marginTop="42dp"
+        android:onClick="okClickHandler"
+        android:text="@string/ok" />
 
     <Button
         android:id="@+id/btnCancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnOK"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="41dp"
-       	android:text="@string/cancel"
-       	android:onClick="cancleClickHandler" />
+        android:layout_alignBaseline="@+id/btnOK"
+        android:layout_alignBottom="@+id/btnOK"
+        android:layout_marginRight="14dp"
+        android:layout_toLeftOf="@+id/btnOK"
+        android:onClick="cancleClickHandler"
+        android:text="@string/cancel" />
+
 </RelativeLayout>
