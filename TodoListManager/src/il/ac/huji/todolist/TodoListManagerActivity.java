@@ -4,25 +4,27 @@ import java.util.ArrayList;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 
 public class TodoListManagerActivity extends Activity {
 	
-	private ArrayList<String> todos;
+	private ArrayList<TodoItem> todos;
 	private ListView todolist;
-	private ArrayAdapter<String> todoAdapter;
+	private ArrayAdapter<TodoItem> todoAdapter;
 	
+	public final static int ADD_ACTIVITY_REQUEST_CODE = 1;
+	public final static String ADD_ITEM_RESULT_STRING="title";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_todo_list_manager);
 		
-		todos = new ArrayList<String>();
+		todos = new ArrayList<TodoItem>();
 		
 		
 		todolist = (ListView)findViewById(R.id.lstTodoItems);
@@ -30,18 +32,39 @@ public class TodoListManagerActivity extends Activity {
 		todolist.setAdapter(todoAdapter);		
 	}
 
-	
-	public void AddItemInTodoList()
+
+	public void OpenAddItemActivity()
 	{
-		EditText newTodo = (EditText)findViewById(R.id.edtNewItem);
-    	String thestring = newTodo.getText().toString();
+		Intent intent = new Intent(this,AddNewTodoItemActivity.class);
+		startActivityForResult(intent,ADD_ACTIVITY_REQUEST_CODE);
+	}
+	
+	
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
+	{
+		switch(requestCode)
+		{
+		case ADD_ACTIVITY_REQUEST_CODE:
+			if (RESULT_OK == resultCode)
+			{
+				String AddItemTitle = data.getStringExtra(ADD_ITEM_RESULT_STRING);
+				AddItemInTodoList(AddItemTitle);
+			}
+			break;
+		}
+	}
+
+
+	public void AddItemInTodoList(String thestring)
+	{
     	if (null == thestring || thestring == "" || thestring.length()==0)
     	{
     		return;
-    	}
+    	}	
+    	todoAdapter.add(new TodoItem(thestring,null));
     	
-    	todoAdapter.add(thestring);
-    	newTodo.setText("");
 	}
 	
 	public void DeleteSelectedTodoItem()
@@ -70,7 +93,7 @@ public class TodoListManagerActivity extends Activity {
 		switch (item.getItemId())
 		{
 		case R.id.menuItemAdd:
-			AddItemInTodoList();
+			OpenAddItemActivity();
 			break;
 		case R.id.menuItemDelete:
 			DeleteSelectedTodoItem();
