@@ -19,8 +19,6 @@ public class TodoListArrayAdapter extends ArrayAdapter<TodoItem> {
 	public TodoListArrayAdapter(Activity activity,int textViewResourceId , List<TodoItem> arr) 
 	{
 		super(activity, textViewResourceId,arr);
-		
-		
 	}
 
 
