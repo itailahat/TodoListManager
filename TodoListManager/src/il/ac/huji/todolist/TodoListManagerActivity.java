@@ -149,7 +149,7 @@ public class TodoListManagerActivity extends Activity {
 	    inflater.inflate(R.menu.context_todo_menu, menu);
 	    TodoItem current = todos.get(((AdapterContextMenuInfo)menuInfo).position);
 	    menu.setHeaderTitle(current.title);
-	    if (current.title.matches("CALL\\s.*"))
+	    if (current.title.matches("Call\\s.*"))
 	    {
 		    MenuItem callItem = menu.getItem(1);
 		    callItem.setVisible(true);
