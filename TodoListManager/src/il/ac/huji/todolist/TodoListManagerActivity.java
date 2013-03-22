@@ -60,16 +60,9 @@ public class TodoListManagerActivity extends Activity {
 			if (RESULT_OK == resultCode)
 			{
 				String AddItemTitle = data.getStringExtra(ADD_ITEM_RESULT_STRING);
-				Date dueDate = new Date();
-				long longDate = data.getLongExtra(ADD_ITEM_RESULT_DATE, -1);
-				if (longDate>=0)
-				{
-					dueDate.setTime(longDate);
-				}
-				else
-				{
-					dueDate = null;
-				}
+				
+				Date dueDate = (Date)data.getSerializableExtra(ADD_ITEM_RESULT_DATE);
+				
 				AddItemInTodoList(AddItemTitle,dueDate);
 			}
 			break;
