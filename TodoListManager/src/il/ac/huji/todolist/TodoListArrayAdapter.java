@@ -56,11 +56,6 @@ public class TodoListArrayAdapter extends ArrayAdapter<TodoItem> {
 			text.setTextColor(Color.RED);
 			dueDate.setTextColor(Color.RED);
 		}
-		else
-		{
-			text.setTextColor(Color.BLUE);
-			dueDate.setTextColor(Color.BLUE);
-		}
 		
 		return view;
 	}
