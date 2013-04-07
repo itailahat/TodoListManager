@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -42,6 +43,15 @@ public class TodoListManagerActivity extends Activity {
 		
 		// TODO: fill todos list with data from DB
 		todos = new ArrayList<TodoItem>();
+		Cursor cursor = Db.query(TodoListDB.TODO_TABLE_NAME, 
+					new String[]{TodoListDB.TODO_TITLE_COLUMN_NAME, TodoListDB.TODO_DUE_COLUMN_NAME}, null, null, null, null, null);
+		if (cursor.moveToFirst())
+		{
+			do {
+				todos.add(new TodoItem(cursor.getString(0), new Date(cursor.getLong(1))));
+			} while (cursor.moveToNext());
+		}
+		
 		
 		todolist = (ListView)findViewById(R.id.lstTodoItems);
 		todoAdapter = new TodoListArrayAdapter(this,android.R.layout.simple_list_item_1,todos);
@@ -85,6 +95,9 @@ public class TodoListManagerActivity extends Activity {
     		return;
     	}
     	
+    	if (null == Db)
+    		return;
+    	
     	ContentValues TDItem = new ContentValues();
     	TDItem.put(TodoListDB.TODO_TITLE_COLUMN_NAME,thestring);
     	TDItem.put(TodoListDB.TODO_DUE_COLUMN_NAME, dueDate.getTime()); //TODO: check if this is the right type conversion
@@ -101,6 +114,10 @@ public class TodoListManagerActivity extends Activity {
 		int selected = todoList.getSelectedItemPosition();
 		if (selected >=0 )
 		{
+			/*Db.delete(TodoListDB.TODO_TABLE_NAME, TodoListDB.TODO_TITLE_COLUMN_NAME + "==?% AND " +
+													TodoListDB.TODO_DUE_COLUMN_NAME + "==?%", 
+													new String[]{todoList.getSe})*/
+			// TODO: remove item from DB
 			todos.remove(selected);				
 			todoAdapter.notifyDataSetChanged();
 		}
@@ -139,6 +156,7 @@ public class TodoListManagerActivity extends Activity {
 		int selected = info.position;
 		switch (item.getItemId()) {
 		case R.id.menuItemDelete:
+			// TODO: remove item from DB. consider making a function that removes according to index
 			todos.remove(selected);				
 			todoAdapter.notifyDataSetChanged();
 			break;
