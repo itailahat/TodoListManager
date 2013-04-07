@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -22,6 +24,8 @@ public class TodoListManagerActivity extends Activity {
 	private ArrayList<TodoItem> todos;
 	private ListView todolist;
 	private ArrayAdapter<TodoItem> todoAdapter;
+	private TodoListDB TodoDB;
+	private SQLiteDatabase Db;
 	
 	public final static int ADD_ACTIVITY_REQUEST_CODE = 1;
 	public final static String ADD_ITEM_RESULT_STRING="title";
@@ -32,8 +36,12 @@ public class TodoListManagerActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_todo_list_manager);
 		
-		todos = new ArrayList<TodoItem>();
 		
+		TodoDB = new TodoListDB(this);
+		Db = TodoDB.getWritableDatabase();
+		
+		// TODO: fill todos list with data from DB
+		todos = new ArrayList<TodoItem>();
 		
 		todolist = (ListView)findViewById(R.id.lstTodoItems);
 		todoAdapter = new TodoListArrayAdapter(this,android.R.layout.simple_list_item_1,todos);
@@ -75,7 +83,14 @@ public class TodoListManagerActivity extends Activity {
     	if (null == thestring || thestring == "" || thestring.length()==0)
     	{
     		return;
-    	}	
+    	}
+    	
+    	ContentValues TDItem = new ContentValues();
+    	TDItem.put(TodoListDB.TODO_TITLE_COLUMN_NAME,thestring);
+    	TDItem.put(TodoListDB.TODO_DUE_COLUMN_NAME, dueDate.getTime()); //TODO: check if this is the right type conversion
+    	Db.insert(TodoListDB.TODO_TABLE_NAME, null, TDItem);
+    	
+    	
     	todoAdapter.add(new TodoItem(thestring,dueDate));
     	
 	}
