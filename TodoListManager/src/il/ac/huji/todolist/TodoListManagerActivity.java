@@ -143,7 +143,7 @@ public class TodoListManagerActivity extends Activity {
 	
 	public void DeleteByIndexFromDb(int index)
 	{
-		TodoItem todoItem = new TodoItem(todos.get(index).title, todos.get(index).dueDate);
+		TodoItem todoItem = new TodoItem(todos.get(index).getTitle(), todos.get(index).getDueDate());
 		
 		
 		todoDAL.delete(todoItem);
@@ -152,7 +152,7 @@ public class TodoListManagerActivity extends Activity {
 		//Delete from Db:
 		Db.delete(TodoListDB.TODO_TABLE_NAME, TodoListDB.TODO_TITLE_COLUMN_NAME + "=? AND " +
 				TodoListDB.TODO_DUE_COLUMN_NAME + "=?", 
-				new String[]{todos.get(index).title, String.valueOf(todos.get(index).dueDate.getTime())});
+				new String[]{todos.get(index).getTitle(), String.valueOf(todos.get(index).getDueDate().getTime())});
 		
 		//Delete from todo list:
 		todos.remove(index);				
@@ -194,7 +194,7 @@ public class TodoListManagerActivity extends Activity {
 			break;
 		case R.id.menuItemCall:
 			// gets the number, assuming 'call ' at the beginning
-			String number = todos.get(selected).title.substring(5);  
+			String number = todos.get(selected).getTitle().substring(5);  
 			Intent dial = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+number));
 			startActivity(dial);
 
@@ -212,13 +212,13 @@ public class TodoListManagerActivity extends Activity {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflater = getMenuInflater();
 	    inflater.inflate(R.menu.context_todo_menu, menu);
-	    TodoItem current = todos.get(((AdapterContextMenuInfo)menuInfo).position);
-	    menu.setHeaderTitle(current.title);
-	    if (current.title.matches("Call\\s.*"))
+	    ITodoItem current = todos.get(((AdapterContextMenuInfo)menuInfo).position);
+	    menu.setHeaderTitle(current.getTitle());
+	    if (current.getTitle().matches("Call\\s.*"))
 	    {
 		    MenuItem callItem = menu.getItem(1);
 		    callItem.setVisible(true);
-		    callItem.setTitle(current.title);
+		    callItem.setTitle(current.getTitle());
 	    }
 	    else
 	    {
