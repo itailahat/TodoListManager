@@ -40,7 +40,7 @@ public class TodoDAL {
 		// Local DB:
     	ContentValues TDItem = new ContentValues();
     	TDItem.put(TodoListDB.TODO_TITLE_COLUMN_NAME,todoItem.getTitle());
-    	TDItem.put(TodoListDB.TODO_DUE_COLUMN_NAME, todoItem.getDueDate().getTime()); //TODO: check if this is the right type conversion
+    	TDItem.put(TodoListDB.TODO_DUE_COLUMN_NAME, todoItem.getDueDate().getTime()); 
     	if (Db.insert(TodoListDB.TODO_TABLE_NAME, null, TDItem)<0)
     	{
     		return false;
@@ -64,7 +64,7 @@ public class TodoDAL {
 	public boolean update(ITodoItem todoItem) 
 	{
 		ContentValues TDItem = new ContentValues();
-    	TDItem.put(TodoListDB.TODO_DUE_COLUMN_NAME, todoItem.getDueDate().getTime()); //TODO: check if this is the right type conversion
+    	TDItem.put(TodoListDB.TODO_DUE_COLUMN_NAME, todoItem.getDueDate().getTime());
     	if (0==Db.update(TodoListDB.TODO_TABLE_NAME, 
     					TDItem, 
     					TodoListDB.TODO_TITLE_COLUMN_NAME+"=?",
@@ -91,7 +91,7 @@ public class TodoDAL {
 	
 	public boolean delete(ITodoItem todoItem) 
 	{
-		//TODO: wrap with try catch
+		
 		
 		//Delete from Db:
 		Db.delete(TodoListDB.TODO_TABLE_NAME, TodoListDB.TODO_TITLE_COLUMN_NAME + "=?", 
@@ -118,13 +118,13 @@ public class TodoDAL {
 					for (Iterator<ParseObject> i = scoreList.iterator(); i.hasNext();)
 					{
 						ParseObject foundItem = i.next();
-						//Log.d("TODO-Parse","found item:" + foundItem.getString(PARSE_KEY_TITLE));
-						foundItem.deleteInBackground();//TODO: consider remove from DB on callback
+						//Log.d("todo-Parse","found item:" + foundItem.getString(PARSE_KEY_TITLE));
+						foundItem.deleteInBackground();
 					}
 				}
 				else
 				{
-					Log.d("TODO-Parse", "Could not find Parse object");
+					Log.d("todo-Parse", "Could not find Parse object");
 				}
 				
 			}
@@ -153,12 +153,12 @@ public class TodoDAL {
 			{
 				ParseObject po = i.next();
 				
-				Log.d("TODO-get","the date is :" + po.getLong(PARSE_KEY_DUE));
+				Log.d("todo-get","the date is :" + po.getLong(PARSE_KEY_DUE));
 				retList.add(new TodoItem(po.getString(PARSE_KEY_TITLE),new Date(po.getLong(PARSE_KEY_DUE))));
 			}
 			return retList;
 		} catch (ParseException e) {
-			Log.d("TODO-PARSE", "Could not get parse data.");
+			Log.d("todo-PARSE", "Could not get parse data.");
 			return null;
 		}*/
 				
