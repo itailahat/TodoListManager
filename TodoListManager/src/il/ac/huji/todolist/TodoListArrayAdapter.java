@@ -41,22 +41,24 @@ public class TodoListArrayAdapter extends ArrayAdapter<ITodoItem> {
 		{
 			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			dueDate.setText(df.format(currentItem.getDueDate()));
+		
+		
+			Calendar clNow = Calendar.getInstance();
+			Calendar clCurrent = Calendar.getInstance();
+			
+			clNow.setTime(new Date());
+			clNow.add(Calendar.DATE, -1);
+			
+			clCurrent.setTime(currentItem.getDueDate());
+			
+			
+			if (clNow.after(clCurrent))
+			//if (currentItem.getDueDate().after(new Date()))
+			{
+				text.setTextColor(Color.RED);
+				dueDate.setTextColor(Color.RED);
+			}
 		}
-		
-		Calendar clNow = Calendar.getInstance();
-		Calendar clCurrent = Calendar.getInstance();
-		
-		clNow.setTime(new Date());
-		clNow.add(Calendar.DATE, -1);
-		
-		clCurrent.setTime(currentItem.getDueDate());
-		
-		if (clNow.after(clCurrent))
-		{
-			text.setTextColor(Color.RED);
-			dueDate.setTextColor(Color.RED);
-		}
-		
 		return view;
 	}
 	
