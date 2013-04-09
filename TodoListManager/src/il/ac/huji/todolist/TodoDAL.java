@@ -102,8 +102,18 @@ public class TodoDAL {
 		Db.delete(TodoListDB.TODO_TABLE_NAME, TodoListDB.TODO_TITLE_COLUMN_NAME + "=?", 
 				new String[]{todoItem.getTitle()});
 		
-		
-		ParseQuery pq = new ParseQuery(PARSE_OBJECT_TODO_CLASS);
+		try
+		{
+			ParseQuery pq = new ParseQuery(PARSE_OBJECT_TODO_CLASS);
+			pq.whereEqualTo(PARSE_KEY_TITLE, todoItem.getTitle());
+			ParseObject po = pq.getFirst();
+			po.delete();
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
+		/*ParseQuery pq = new ParseQuery(PARSE_OBJECT_TODO_CLASS);
 		pq.whereEqualTo(PARSE_KEY_TITLE, todoItem.getTitle());
 		pq.findInBackground(new FindCallback(){
 			public void done(List<ParseObject> scoreList, ParseException e)
@@ -123,7 +133,7 @@ public class TodoDAL {
 				}
 				
 			}
-		});
+		});*/
 		return true;
 		
 	}
