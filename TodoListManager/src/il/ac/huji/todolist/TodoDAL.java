@@ -10,23 +10,29 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 public class TodoDAL {
 	
 	public final static String PARSE_OBJECT_TODO_CLASS = "todo";
 	public final static String PARSE_KEY_TITLE = "title";
 	public final static String PARSE_KEY_DUE = "due";
+	public final static String PARSE_KEY_USER = "user";
 	private TodoListDB TodoDB;
 	private SQLiteDatabase Db;
+	private ParseUser currentUser;
 	
 	
 	public TodoDAL(Context context) 
 	{
 		Parse.initialize(context, context.getString(R.string.parseApplication), 
 				context.getString(R.string.clientKey));
-		
+		ParseUser.enableAutomaticUser();
+		currentUser = ParseUser.getCurrentUser();
 		//Parse.initialize(this, "148sQStrtsiLhDuRR6qewGuPHnoHHmYdg6joyhIX", 
 		//				"w5OAVrGA5tEq14nYdGUAv2XYQG7cRr5wq7ezlxUd");
 		
@@ -48,13 +54,16 @@ public class TodoDAL {
 		
     	try
     	{
-			ParseObject po = new ParseObject(PARSE_OBJECT_TODO_CLASS);
-	    	po.put(PARSE_KEY_TITLE, todoItem.getTitle());
+    		
+    		ParseObject po = new ParseObject(PARSE_OBJECT_TODO_CLASS);
+	    	po.put(PARSE_KEY_USER, currentUser);
+    		po.put(PARSE_KEY_TITLE, todoItem.getTitle());
 	    	po.put(PARSE_KEY_DUE, todoItem.getDueDate().getTime());
 	    	po.save();
     	}
     	catch (Exception e)
     	{
+    		Log.d("Parse","Failed adding item:" + e.getMessage());
     		return false;
     	}
 		return true;
@@ -77,12 +86,14 @@ public class TodoDAL {
 		try
 		{
 			ParseQuery pq = new ParseQuery(PARSE_OBJECT_TODO_CLASS);
+			pq.whereEqualTo(PARSE_KEY_USER, currentUser);
 			pq.whereEqualTo(PARSE_KEY_TITLE, todoItem.getTitle());
 			ParseObject po = pq.getFirst();
 			po.put(PARSE_KEY_DUE, todoItem.getDueDate().getTime());
 			po.save();
 		}
 		catch (Exception e) {			
+			Log.d("Parse","Failed updating item:" + e.getMessage());
 			return false;
 		}
 		
@@ -100,12 +111,14 @@ public class TodoDAL {
 		try
 		{
 			ParseQuery pq = new ParseQuery(PARSE_OBJECT_TODO_CLASS);
+			pq.whereEqualTo(PARSE_KEY_USER, currentUser);
 			pq.whereEqualTo(PARSE_KEY_TITLE, todoItem.getTitle());
 			ParseObject po = pq.getFirst();
 			po.delete();
 		}
 		catch (Exception e)
 		{
+			Log.d("Parse","Failed deleting item:" + e.getMessage());
 			return false;
 		}
 		/*ParseQuery pq = new ParseQuery(PARSE_OBJECT_TODO_CLASS);
