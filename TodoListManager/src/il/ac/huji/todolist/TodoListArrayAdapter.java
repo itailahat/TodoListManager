@@ -14,9 +14,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class TodoListArrayAdapter extends ArrayAdapter<TodoItem> {
+public class TodoListArrayAdapter extends ArrayAdapter<ITodoItem> {
 	
-	public TodoListArrayAdapter(Activity activity,int textViewResourceId , List<TodoItem> arr) 
+	public TodoListArrayAdapter(Activity activity,int textViewResourceId , List<ITodoItem> arr) 
 	{
 		super(activity, textViewResourceId,arr);
 	}
@@ -29,18 +29,18 @@ public class TodoListArrayAdapter extends ArrayAdapter<TodoItem> {
 	{
 		LayoutInflater inflater = LayoutInflater.from(getContext());
 		View view = inflater.inflate(R.layout.row,null);
-		TodoItem currentItem = getItem(position);
+		ITodoItem currentItem = getItem(position);
 		TextView text = (TextView)view.findViewById(R.id.txtTodoTitle);
-		text.setText(currentItem.title);
+		text.setText(currentItem.getTitle());
 		TextView dueDate = (TextView)view.findViewById(R.id.txtTodoDueDate);
-		if (null == currentItem.dueDate)
+		if (null == currentItem.getDueDate())
 		{
 			dueDate.setText("No due date");
 		}
 		else
 		{
 			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-			dueDate.setText(df.format(currentItem.dueDate));
+			dueDate.setText(df.format(currentItem.getDueDate()));
 		}
 		
 		Calendar clNow = Calendar.getInstance();
@@ -49,7 +49,7 @@ public class TodoListArrayAdapter extends ArrayAdapter<TodoItem> {
 		clNow.setTime(new Date());
 		clNow.add(Calendar.DATE, -1);
 		
-		clCurrent.setTime(currentItem.dueDate);
+		clCurrent.setTime(currentItem.getDueDate());
 		
 		if (clNow.after(clCurrent))
 		{

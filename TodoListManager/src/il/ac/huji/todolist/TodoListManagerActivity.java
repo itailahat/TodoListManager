@@ -2,6 +2,8 @@ package il.ac.huji.todolist;
 
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -20,29 +23,44 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
+import com.parse.FindCallback;
+import com.parse.Parse;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseException;
+
 public class TodoListManagerActivity extends Activity {
 	
-	private ArrayList<TodoItem> todos;
+	private List<ITodoItem> todos;
 	private ListView todolist;
-	private ArrayAdapter<TodoItem> todoAdapter;
+	private ArrayAdapter<ITodoItem> todoAdapter;
 	private TodoListDB TodoDB;
 	private SQLiteDatabase Db;
+	private TodoDAL todoDAL;
 	
 	public final static int ADD_ACTIVITY_REQUEST_CODE = 1;
 	public final static String ADD_ITEM_RESULT_STRING="title";
 	public final static String ADD_ITEM_RESULT_DATE="dueDate";
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_todo_list_manager);
 		
+		todoDAL = new TodoDAL(this);
+		//Parse.initialize(this, getString(R.string.parseApplication), 
+			//				getString(R.string.clientKey));
+		
+		//Parse.initialize(this, "148sQStrtsiLhDuRR6qewGuPHnoHHmYdg6joyhIX", 
+		//				"w5OAVrGA5tEq14nYdGUAv2XYQG7cRr5wq7ezlxUd");
 		
 		TodoDB = new TodoListDB(this);
 		Db = TodoDB.getWritableDatabase();
 		
-		// TODO: fill todos list with data from DB
-		todos = new ArrayList<TodoItem>();
+		
+		todos = todoDAL.all();
+		/*todos = new ArrayList<TodoItem>();
 		Cursor cursor = Db.query(TodoListDB.TODO_TABLE_NAME, 
 					new String[]{TodoListDB.TODO_TITLE_COLUMN_NAME, TodoListDB.TODO_DUE_COLUMN_NAME}, null, null, null, null, null);
 		if (cursor.moveToFirst())
@@ -50,7 +68,7 @@ public class TodoListManagerActivity extends Activity {
 			do {
 				todos.add(new TodoItem(cursor.getString(0), new Date(cursor.getLong(1))));
 			} while (cursor.moveToNext());
-		}
+		}*/
 		
 		
 		todolist = (ListView)findViewById(R.id.lstTodoItems);
@@ -98,13 +116,17 @@ public class TodoListManagerActivity extends Activity {
     	if (null == Db)
     		return;
     	
+    	// Local DB:
     	ContentValues TDItem = new ContentValues();
     	TDItem.put(TodoListDB.TODO_TITLE_COLUMN_NAME,thestring);
     	TDItem.put(TodoListDB.TODO_DUE_COLUMN_NAME, dueDate.getTime()); //TODO: check if this is the right type conversion
     	Db.insert(TodoListDB.TODO_TABLE_NAME, null, TDItem);
     	
+    	//Parse:
+    	TodoItem todoitem = new TodoItem(thestring,dueDate);
+    	todoDAL.insert(todoitem);
     	
-    	todoAdapter.add(new TodoItem(thestring,dueDate));
+    	todoAdapter.add(todoitem);
     	
 	}
 	
@@ -114,16 +136,28 @@ public class TodoListManagerActivity extends Activity {
 		int selected = todoList.getSelectedItemPosition();
 		if (selected >=0 )
 		{
-			/*Db.delete(TodoListDB.TODO_TABLE_NAME, TodoListDB.TODO_TITLE_COLUMN_NAME + "==?% AND " +
-													TodoListDB.TODO_DUE_COLUMN_NAME + "==?%", 
-													new String[]{todoList.getSe})*/
-			// TODO: remove item from DB
-			todos.remove(selected);				
-			todoAdapter.notifyDataSetChanged();
+			DeleteByIndexFromDb(selected);
 		}
 		
 	}
 	
+	public void DeleteByIndexFromDb(int index)
+	{
+		TodoItem todoItem = new TodoItem(todos.get(index).title, todos.get(index).dueDate);
+		
+		
+		todoDAL.delete(todoItem);
+		
+		
+		//Delete from Db:
+		Db.delete(TodoListDB.TODO_TABLE_NAME, TodoListDB.TODO_TITLE_COLUMN_NAME + "=? AND " +
+				TodoListDB.TODO_DUE_COLUMN_NAME + "=?", 
+				new String[]{todos.get(index).title, String.valueOf(todos.get(index).dueDate.getTime())});
+		
+		//Delete from todo list:
+		todos.remove(index);				
+		todoAdapter.notifyDataSetChanged();
+	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -156,9 +190,7 @@ public class TodoListManagerActivity extends Activity {
 		int selected = info.position;
 		switch (item.getItemId()) {
 		case R.id.menuItemDelete:
-			// TODO: remove item from DB. consider making a function that removes according to index
-			todos.remove(selected);				
-			todoAdapter.notifyDataSetChanged();
+			DeleteByIndexFromDb(selected);
 			break;
 		case R.id.menuItemCall:
 			// gets the number, assuming 'call ' at the beginning
